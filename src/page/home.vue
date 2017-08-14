@@ -322,6 +322,7 @@
           // 修改已存在的数据
           let index = _.findIndex(this.search_add_data, {_id: item._id});
           this.search_add_data[index] = _.assign(this.search_add_data[index], item);
+          this.search_add_data = deal.for_title(this.search_add_data);
         }
         $('#setting').modal('hide');
         this.data = {};
