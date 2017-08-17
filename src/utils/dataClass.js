@@ -29,20 +29,22 @@ export default {
 
     _.forEach(data,function (li) {
       if(li.value){
-        if(li.request){
-          li.name = li.title+'('+li.machine_name+':'+li.value+")"+"(必须)"
-        }else{
-          li.name = li.title+'('+li.machine_name+':'+li.value+")"
-        }
+        li.name = li.title+'：'+'('+li.machine_name+'：'+li.value+')'
       }else{
-        if (li.request){
-          li.name = li.title+'('+li.machine_name+")"+"(必须)"
-        }else{
-          li.name = li.title+'('+li.machine_name+")"
-        }
+        li.name = li.title+'：'+'('+li.machine_name+')'
       }
-
-    })
+    });
     return data;
+  },
+
+  for_search_title(item){
+    // _.forEach(data,function (li) {
+    if(item.type=='find'){
+       item.name = item.title+" (" + item.key + ')';
+      return item;
+    }
+    return item
+
+    // })
   }
 }

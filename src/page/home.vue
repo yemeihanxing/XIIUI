@@ -3,6 +3,7 @@
     <header class="header_content">
       <div class="container">
         <h1>管理控制台</h1>
+        <span class="s_id">(59771540fe55320b9c0c30d7)</span>
         <div class="fr">
           <a href="javascript:;">
             <button type="button" class="btn btn-primary btn-sm">删除</button>
@@ -15,28 +16,28 @@
           </a>
         </div>
       </div>
-
     </header>
+
     <div class="container">
       <div class="message">
         <div class="row">
-          <div class="col-md-6">
+          <div class="col-sm-6">
             <label>名称：</label>
-            <a class="javascript:;"><span>春日知白健康科技有限公司</span></a>
+            <a @click="open_message_dialog" data-backdrop="static"><span>{{message_data.title}}</span></a>
           </div>
-          <div class="col-md-6">
+          <div class="col-sm-6">
             <label>地址：</label>
-            <a class="javascript:;"><span>/xii-ui/xii_ui.html</span></a>
+            <a @click="open_message_dialog"><span>{{message_data.path}}</span></a>
           </div>
         </div>
         <div class="row">
-          <div class="col-md-6">
-            <label>ID：</label>
-            <a class="javascript:;"><span>59771540fe55320b9c0c30d7</span></a>
+          <div class="col-sm-6">
+            <label>机械名称：</label>
+            <a @click="open_message_dialog"><span>{{message_data.machine_name}}</span></a>
           </div>
-          <div class="col-md-6">
+          <div class="col-sm-6">
             <label>权限：</label>
-            <a class="javascript:;"><span>修改权限</span></a>
+            <a @click="open_message_dialog"><span>{{transform[message_data.permission]}}</span></a>
           </div>
         </div>
       </div>
@@ -62,7 +63,7 @@
             </thead>
             <thead>
             <tr v-for="m in search_add_data"class="table_tr">
-              <td :class="{'red':m.request}">{{m.name}}</td>
+              <td>{{m.name}}<span v-if="m.request"class="red"> (必须)</span></td>
               <td>{{m.type}}</td>
               <td>{{m.data_type}}</td>
               <td>
@@ -73,32 +74,6 @@
             </thead>
           </table>
         </div>
-
-        <!--<div class="checking" v-for="m in search_add_data">-->
-        <!--<div class="check_content">-->
-        <!--<div class="check_item">-->
-        <!--<label>名称：</label>-->
-        <!--<span>{{m.name}}</span>-->
-        <!--</div>-->
-        <!--<div class="check_item">-->
-        <!--<label>类型：</label>-->
-        <!--<span>{{tranform[m.type]}}</span>-->
-        <!--</div>-->
-        <!--<div class="check_item">-->
-        <!--<label>数据类型：</label>-->
-        <!--<span>{{tranform[m.data_type]}}</span>-->
-        <!--</div>-->
-        <!--<div class="check_item">-->
-        <!--<label>操作:</label>-->
-        <!--<a data-toggle="modal" data-target="#setting" class="edit" @click="setting_edit(m)">编辑</a> |-->
-        <!--<a href="javascript:;" class="del" @click="search_del(m,'setting')">删除</a>-->
-        <!--</div>-->
-        <!--</div>-->
-        <!--<div>-->
-        <!--</div>-->
-        <!--</div>-->
-
-
         <div class="check_failed">
           <label class="text-right">失败返回：</label>
           <div class="failed_item">
@@ -106,6 +81,7 @@
           </div>
         </div>
       </div>
+
       <!--查询数据-->
       <div class="check_data">
         <div class="h3_item">
@@ -118,87 +94,270 @@
         </div>
         <div class="checking" v-for="m in search_data">
           <div v-if="m.type=='find'" class="check_content">
-            <div class="check_item">
-              <label>类型：</label>
-              <a data-toggle="modal" data-target="#query"  @click="search_edit(m)"><span>find</span></a>
-            </div>
-            <div class="check_item">
-              <label>pager：</label>
-              <a data-toggle="modal" data-target="#query"  @click="search_edit(m)"><span>页</span></a>
-            </div>
-            <div class="check_item">
-              <label>fields：</label>
-              <a data-toggle="modal" data-target="#query"  @click="search_edit(m)"><span>字段集</span></a>
-            </div>
-            <div class="check_item">
-              <label>query：</label>
-              <a data-toggle="modal" data-target="#query"  @click="search_edit(m)"><span>查找</span></a>
-            </div>
-            <div class="item">
-              <label>操作:</label>
-              <a data-toggle="modal" data-target="#query" class="edit" @click="search_edit(m,'search')">编辑</a> |
-              <a href="javascript:;" class="del" @click="search_del(m,'search')">删除</a>
-            </div>
+              <div class="check_content-header">
+                <h3 class="fs16">查询：{{m.name}}</h3>
+                <div class="fr add-btn">
+                  <button data-toggle="modal" data-target="#query" class="btn btn-primary btn-sm" @click="search_edit(m,'search')">编辑</button>
+                  <button href="javascript:;" class="btn btn-danger btn-sm" @click="search_del(m,'search')">删除</button>
+                </div>
+              </div>
+              <div class="check_content-items">
+                <div class="check_content-item">
+                  <label class="check_content-label">类型：</label>
+                  <div class="check_content-title">{{m.type}}</div>
+                </div>
+                <div class="check_content-item">
+                  <label class="check_content-label">model：</label>
+                  <div class="check_content-title">{{m.model}}</div>
+                </div>
+                <div class="check_content-item border">
+                  <label class="check_content-label">pager：</label>
+                  <div class="check_content-title">
+                    <span>page：{{m.pager.page}}</span>
+                    <span style="padding-left: 80px"></span>
+                    <span>limit：{{m.pager.limit}}</span>
+                  </div>
+                </div>
+                <!--查询-->
+                <div class="table-responsive"v-if="m.query.length!=0">
+                  <table class="table">
+                      <caption>查询：</caption>
+                    <thead>
+                    <tr>
+                      <th>字段</th>
+                      <th>键</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="i in m.query"class="table_tr">
+                      <td>{{i.field}}</td>
+                      <td>{{i.key}}</td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <!--字段集-->
+                <div class="table-responsive">
+                  <table class="table">
+                    <caption>字段集：</caption>
+                    <thead>
+                    <tr>
+                      <th>字段</th>
+                      <th>键</th>
+                      <th>数据类型</th>
+                    </tr>
+                    </thead>
+                    <tbody v-if="m.fields.length>0">
+                    <tr v-for="i in m.fields" class="table_tr">
+                      <td>{{i.field}}</td>
+                      <td>{{i.key}}</td>
+                      <td>{{transform[i.data_type]}}</td>
+                    </tr>
+                    </tbody>
+                    <tbody v-else>
+                    <tr class="table_tr">
+                      <td colspan="3">
+                        全部
+                      </td>
+                    </tr>
+                    </tbody>
+
+                  </table>
+                </div>
+              </div>
           </div>
           <div v-if="m.type=='group'" class="check_content">
-            <div class="check_item">
-              <label>类型：</label>
-              <a data-toggle="modal" data-target="#query" @click="search_edit(m)"><span>{{m.type}}</span></a>
+            <div class="check_content-header">
+              <h3 class="fs16">group</h3>
+              <div class="fr add-btn">
+                <button data-toggle="modal" data-target="#query" class="btn btn-primary btn-sm" @click="search_edit(m,'search')">编辑</button>
+                <button href="javascript:;" class="btn btn-danger btn-sm" @click="search_del(m,'search')">删除</button>
+              </div>
             </div>
-            <div class="item">
-              <label>操作:</label>
-              <a data-toggle="modal" data-target="#query" class="edit" @click="search_edit(m)">编辑</a> |
-              <a href="javascript:;" class="del" @click="search_del(m,'search')">删除</a>
+            <div class="check_content-items">
+              <div class="check_content-item">
+                <label class="check_content-label">类型：</label>
+                <div class="check_content-title">{{m.type}}</div>
+              </div>
+              <div class="check_content-item">
+                <label class="check_content-label">字段1：</label>
+                <div class="check_content-title">{{m.field1}}</div>
+              </div>
+              <div class="check_content-item">
+                <label class="check_content-label">字段1名称：</label>
+                <div class="check_content-title">{{m.field1_name}}</div>
+              </div>
+              <div class="check_content-item">
+                <label class="check_content-label">字段2：</label>
+                <div class="check_content-title">{{m.field2}}</div>
+              </div>
+              <div class="check_content-item">
+                <label class="check_content-label">字段2名称：</label>
+                <div class="check_content-title">{{m.field2_name}}</div>
+              </div>
+              <div class="check_content-item">
+                <label class="check_content-label">新字段：</label>
+                <div class="check_content-title">{{m.new_field}}</div>
+              </div>
+              <div class="check_content-item">
+                <label class="check_content-label">one：</label>
+                <div class="check_content-title">{{m.one}}</div>
+              </div>
             </div>
           </div>
           <div v-if="m.type=='get_key'" class="check_content">
-            <div class="check_item">
-              <label>类型：</label>
-              <a data-toggle="modal" data-target="#query" @click="search_edit(m)"><span>{{m.type}}</span></a>
+            <div class="check_content-header">
+              <h3 class="fs16">get_key</h3>
+              <div class="fr add-btn">
+                <button data-toggle="modal" data-target="#query" class="btn btn-primary btn-sm" @click="search_edit(m,'search')">编辑</button>
+                <button href="javascript:;" class="btn btn-danger btn-sm" @click="search_del(m,'search')">删除</button>
+              </div>
             </div>
-            <div class="item">
-              <label>操作:</label>
-              <a data-toggle="modal" data-target="#query" class="edit" @click="search_edit(m)">编辑</a> |
-              <a href="javascript:;" class="del" @click="search_del(m,'search')">删除</a>
+            <div class="check_content-items">
+              <div class="check_content-item">
+                <label class="check_content-label">类型：</label>
+                <div class="check_content-title">{{m.type}}</div>
+              </div>
+              <div class="check_content-item">
+                <label class="check_content-label">字段1：</label>
+                <div class="check_content-title">{{m.field1}}</div>
+              </div>
+              <div class="check_content-item">
+                <label class="check_content-label">字段1名称：</label>
+                <div class="check_content-title">{{m.field1_name}}</div>
+              </div>
+              <div class="check_content-item">
+                <label class="check_content-label">字段2：</label>
+                <div class="check_content-title">{{m.field2}}</div>
+              </div>
+              <div class="check_content-item">
+                <label class="check_content-label">字段2名称：</label>
+                <div class="check_content-title">{{m.field2_name}}</div>
+              </div>
+              <div class="check_content-item">
+                <label class="check_content-label">字段2_get：</label>
+                <div class="check_content-title">{{m.field2_get}}</div>
+              </div>
+              <div class="check_content-item">
+                <label class="check_content-label">新字段：</label>
+                <div class="check_content-title">{{m.new_field}}</div>
+              </div>
             </div>
           </div>
           <div v-if="m.type=='set_key'" class="check_content">
-            <div class="check_item">
-              <label>类型：</label>
-              <a data-toggle="modal" data-target="#query"  @click="search_edit(m)"><span>{{m.type}}</span></a>
+            <div class="check_content-header">
+              <h3 class="fs16">set_key</h3>
+              <div class="fr add-btn">
+                <button data-toggle="modal" data-target="#query" class="btn btn-primary btn-sm" @click="search_edit(m,'search')">编辑</button>
+                <button href="javascript:;" class="btn btn-danger btn-sm" @click="search_del(m,'search')">删除</button>
+              </div>
             </div>
-            <div class="item">
-              <label>操作:</label>
-              <a data-toggle="modal" data-target="#query" class="edit" @click="search_edit(m)">编辑</a> |
-              <a href="javascript:;" class="del" @click="search_del(m,'search')">删除</a>
+            <div class="check_content-items">
+              <div class="check_content-item">
+                <label class="check_content-label">类型：</label>
+                <div class="check_content-title">{{m.type}}</div>
+              </div>
+              <div class="check_content-item">
+                <label class="check_content-label">fields：</label>
+                <div class="check_content-title">{{m.fields}}</div>
+              </div>
+              <div class="check_content-item">
+                <label class="check_content-label">字段1名称：</label>
+                <div class="check_content-title">{{m.field1_name}}</div>
+              </div>
             </div>
           </div>
           <div v-if="m.type=='get_value'" class="check_content">
-            <div class="check_item">
-              <label>类型：</label>
-              <a data-toggle="modal" data-target="#query"@click="search_edit(m)"><span>{{m.type}}</span></a>
+            <div class="check_content-header">
+              <h3 class="fs16">get_value</h3>
+              <div class="fr add-btn">
+                <button data-toggle="modal" data-target="#query" class="btn btn-primary btn-sm" @click="search_edit(m,'search')">编辑</button>
+                <button href="javascript:;" class="btn btn-danger btn-sm" @click="search_del(m,'search')">删除</button>
+              </div>
             </div>
-            <div class="item">
-              <label>操作:</label>
-              <a data-toggle="modal" data-target="#query" class="edit" @click="search_edit(m)">编辑</a> |
-              <a href="javascript:;" class="del" @click="search_del(m,'search')">删除</a>
+            <div class="check_content-items">
+              <div class="check_content-item">
+                <label class="check_content-label">类型：</label>
+                <div class="check_content-title">{{m.type}}</div>
+              </div>
+              <div class="check_content-item">
+                <label class="check_content-label">field：</label>
+                <div class="check_content-title">{{m.field}}</div>
+              </div>
+              <div class="check_content-item">
+                <label class="check_content-label">字段1名称：</label>
+                <div class="check_content-title">{{m.field1_name}}</div>
+              </div>
             </div>
           </div>
           <div>
           </div>
         </div>
       </div>
+
       <!--输出设置-->
       <div class="output_setting">
         <div class="h3_item">
           <h3 class="fs16">输出设置</h3>
         </div>
-        <div class="outputting">
-          <div>输出什么</div>
-          <div>输出什么</div>
+        <div class="outputing">
+          <div class="output_content">
+            <div class="output_content-header">
+              <h3 class="fs16">success</h3>
+              <div class="fr add-btn">
+                <button data-toggle="modal" data-target="#output" class="btn btn-primary btn-sm"@click="output_eidt">编辑</button>
+              </div>
+            </div>
+            <div class="output_content-items">
+              <div class="output_content-item">
+                <label class="output_content-label">类型：</label>
+                <div class="output_content-title">reduce</div>
+              </div>
+              <!--字段集-->
+              <div class="table-responsive">
+                <table class="table">
+                  <caption>字段集：</caption>
+                  <thead>
+                  <tr>
+                    <th>类型</th>
+                    <th>值</th>
+                    <th>数据类型</th>
+                    <th>键</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr class="table_tr"v-for="m in output_data.success.fields">
+                    <td>{{transform[m.type]}}</td>
+                    <td>{{m.value}}</td>
+                    <td>{{transform[m.data_type]}}</td>
+                    <td>{{m.key}}</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="outputing">
+          <div class="output_content">
+            <div class="output_content-header">
+              <h3 class="fs16">error</h3>
+              <div class="fr add-btn">
+                <button data-toggle="modal" data-target="#output" class="btn btn-primary btn-sm">编辑</button>
+              </div>
+            </div>
+            <div class="output_content-items">
+              <div class="output_content-item">
+                <label class="output_content-label">类型：</label>
+                <div class="output_content-title">error</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
+
     <!--模型背景-->
     <div class="modal fade" id="search_setting" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
          aria-hidden="true">
@@ -247,7 +406,7 @@
      <!--确认弹窗-->
     <n-dialog v-show="dialog" :msg="tips" @sure="sureDialog" @cancel="dialog=false"></n-dialog>
      <!--设置弹窗-->
-    <s-dialog :data="data" @confirm="confirm"></s-dialog>
+    <s-dialog :data="data" @confirm="confirm" :state="states"></s-dialog>
      <!--类型弹窗-->
     <t-dialog @select_type_confirm="select_type_confirm"></t-dialog>
      <!--搜索弹窗-->
@@ -256,11 +415,15 @@
       :data="amend_find_data"
       :other_data="amend_other_data"
       @on-result-confirm="onResultConfirm"
-      @search_back="search_back"></q-dialog>
+      @search_back="search_back"
+      :item_key = item_key
+      :states=states>
+    </q-dialog>
 
-    <!--<n-details v-show="details_show" :detail_data="detail_data" :type="show_detail_type"></n-details>-->
-    <!--<n-test :data="data"@ceshi="ceshi"></n-test>-->
-    <!--<button @click="btn">点击父传值给子了</button>-->
+    <m-dialog :data="amend_message_data"@message_confirm="message_confirm"></m-dialog>
+
+    <o-dialog :data="amend_output_data"@on-output-result="onOutputResult"></o-dialog>
+
   </div>
 
 </template>
@@ -272,6 +435,8 @@
   import sDialog from '../components/setting_dialog.vue';
   import tDialog from '../components/type_dialog.vue';
   import qDialog from '../components/query_dialog.vue';
+  import oDialog from '../components/output_dialog.vue';
+  import mDialog from '../components/message_dialog.vue';
 
   export default {
     name: 'home',
@@ -286,32 +451,49 @@
           {data_type: 'json'},
           {data_type: 'default'},
           {data_type: 'boolean'}],
-        tranform: {
+        transform: {
           'string': '字符串', 'int': '整型', 'NULL': '空', 'array': '数组', 'objectId': 'objectId', 'number': '数字',
           'json': 'json', 'default': 'default', 'boolean': '布尔类型', 'body': 'body值', 'statics': '固定值', 'query': '查询',
-          'login': '登陆用户ID', 'search': '搜索获取'
+          'login': '登陆用户ID', 'search': '搜索获取','read':'读','write':'写','':''
         },
         select_data: '',
         tip: '',
-        search_add_data: [],
-        search_data: [],
+        data:{},
+        amend_message_data:{},
+        message_data:{title:'公司',machine_name:'机器名',path:'/xii_ui/xiiui.html',permission:'',permissions:['read','write']},
+        search_add_data: [],//查询设置数据
+        search_data: [],// 查询数据
+        output_data:{success:{type:'reduce',fields:[{type: 'statics', value: 'false', data_type: 'boolean', key: 'error'},
+          {type: 'statics', value: 'true', data_type: 'boolean', key: 'success'},
+          {type: 'statics', value: 'search.set_key.0', data_type: 'default', key: 'data'}]},error:{type:'output'}},
         showDialog: false,
         dialog: false,
         tips: '',
-        data: {},
-        amend_find_data: {model:'',pager: {page: '', limit: 30}, fields: [], query: []},
+        amend_find_data: {pager: {page: '', limit: 30}, fields: [], query: []},
         amend_other_data: {},
         detail_data: {},
+        amend_output_data:{},
         select_type: '',
         states: '',
         type: '',
+        item_key:0,
       }
     },
     methods: {
+      /* message信息 */
+      message_confirm(data){
+        this.message_data = _.assign(this.message_data,data);
+        console.log('message_data:',this.message_data);
+        $('#message').modal('hide');
+      },
+      open_message_dialog(){
+         this.amend_message_data = _.cloneDeep(this.message_data);
+        $('#message').modal('show');
+      },
+
       search_add() {
 
         this.states = 'add';
-
       },
       confirm(item) {
         if (this.states == "add") {
@@ -362,19 +544,28 @@
 
       // 选择类型弹窗，点击确认时调用的方法
       select_type_confirm(select_type){
-       console.log('select_type:',select_type);
+
        this.select_type = select_type;
        this.states = 'add';
+       if(select_type=='find'){
+         this.item_key = this.item_key + 1;
+       }
         $('#type_dialog').modal('hide');
         $('#query').modal('show');
       },
 
-      onResultConfirm(item) {
+      onResultConfirm(item,key) {
         console.log('item:', item);
+
         if (this.states == 'add') {
+          item = deal.for_search_title(item);
           item._id = deal.for_id();
           this.search_data.push(item);
+
         } else {
+          if(item.type=='find'){
+            item = deal.for_search_title(item);
+          }
           let index = _.findIndex(this.search_data, {_id: item._id});
           console.log('index:', index);
           if (index >= 0) {
@@ -382,11 +573,11 @@
           }
         }
         $('#query').modal('hide');
-        this.amend_find_data = {model:'',pager: {page: '', limit: ''}, fields: [], query: []};
+        this.amend_find_data = {pager: {page: '', limit: 30}, fields: [], query: []};
         this.amend_other_data = {};
       },
-      search_back() {
-        this.amend_find_data = {model:'',pager: {page: '', limit: ''}, fields: [], query: []};
+      search_back(key) {
+        this.amend_find_data = {pager: {page: '', limit: 30}, fields: [], query: []};
         this.amend_other_data = {};
       },
       search_edit(m) {
@@ -394,18 +585,28 @@
         this.select_type = m.type;
         if (m.type == 'find') {
           console.log('是find:', m);
-          this.amend_find_data = m;
+          this.amend_find_data = _.cloneDeep(m);
         } else {
           console.log('不是find:', m);
           this.amend_other_data = m;
         }
       },
+
+      output_eidt(){
+        this.amend_output_data = _.cloneDeep(this.output_data.success);
+      },
+      onOutputResult(item){
+        _.assign(this.output_data.success,item);
+        $('#output').modal('hide');
+      }
     },
     components: {
       sDialog,
       nDialog,
       tDialog,
-      qDialog
+      qDialog,
+      mDialog,
+      oDialog,
     }
   }
 </script>

@@ -84,6 +84,11 @@
                   </div>
                 </div>
               </div>
+              <div class="querys form-horizontal"v-else>
+                <div class="form-group querys_label">
+                  <label class="col-sm-2 control-label">没有</label>
+                </div>
+              </div>
 
               <!--字段集添加-->
               <div class="form-group form-query">
@@ -111,6 +116,11 @@
                     </div>
                   </div>
                   <button type="button" class="del btn btn-danger" @click="del(m._id,'field')">删除</button>
+                </div>
+              </div>
+              <div class="querys form-horizontal"v-else>
+                <div class="form-group querys_label">
+                  <label class="col-sm-2 control-label">全部</label>
                 </div>
               </div>
 
@@ -203,13 +213,13 @@
             <!--type==get_key-->
             <div v-show="select_type=='set_key'">
               <div class="form-group">
-                <label class="col-sm-2 control-label">fields:</label>
+                <label class="col-sm-2 control-label">fields：</label>
                 <div class="col-sm-5">
                   <input type="text" class="form-control" v-model="item_data.fields" :value="getOtherData">
                 </div>
               </div>
               <div class="form-group">
-                <label class="col-sm-2 control-label">字段1名称:</label>
+                <label class="col-sm-2 control-label">字段1名称：</label>
                 <div class="col-sm-5">
                   <input type="text" class="form-control" v-model="item_data.field1_name">
                 </div>
@@ -243,7 +253,7 @@
   import $ from 'jquery';
 
   export default {
-    props: ['select_type','data','other_data'],
+    props: ['select_type','data','other_data','states','item_key'],
     data() {
       return {
         tranform: {
@@ -262,32 +272,27 @@
         model_list: [{model: 'book'}, {model: 'user'}, {model: 'author'}],
         field_list: [{field: 'field1'}, {field: 'field2'}, {field: 'field3'}],
         key_list: [{key: 'key1'}, {key: 'key2'}, {key: 'key3'}],
-        find_item: {model:'',pager: {page: '', limit: 30}, fields: [], query: []},
+        find_item: {pager: {page: '', limit: 30}, fields: [], query: []},
         item_data: {},
         tips: '',
         dialog: false,
         select_id: '',
         select_state: '',
-        ins:-1,
-        disabled: '',
-        hover: '',
       }
     },
     methods: {
       back() {
         $('#query').modal('hide');
-        this.$emit('search_back');
+        this.$emit('search_back',this.key);
       },
       confirm() {
 
         if (this.select_type == 'find') {
-//          _.assign(this.find_item, this.item);
           this.find_item.type = this.select_type;
-          this.$emit('on-result-confirm', this.find_item);
-          this.find_item = {model: '', pager: {page: '', limit: ''}, fields: [], query: []};
+          this.$emit('on-result-confirm', this.find_item,this.key);
         } else {
           this.item_data.type = this.select_type;
-          this.$emit('on-result-confirm', this.item_data);
+          this.$emit('on-result-confirm', this.item_data,this.key);
           this.item_data = {};
         }
 
@@ -328,27 +333,17 @@
           }
         }
         this.dialog = false;
-      },
-
-      r_click(key) {
-        this.ins = key;
-      },
-      hoverOver(key) {
-        console.log('key:', key);
-        this.hover = key
-      },
-      hoverOut(key) {
-        this.hover = '';
       }
-    }
-    ,
+    },
     components: {
       nDialog
-    }
-    ,
+    },
     computed: {
       getFindData: function () {
         console.log('this.data：', this.data);
+        if(this.states=='add'){
+          this.data.key = 'search_'+this.item_key;
+        }
         return this.find_item = this.data
 //          return _.assign(this.find_item,this.data);
       },

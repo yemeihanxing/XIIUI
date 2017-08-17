@@ -4,7 +4,7 @@
       <div class="modal-content">
         <div class="modal-header header">
           <h4 class="modal-title">
-            类型设置
+            查询设置
           </h4>
           <div class="add-seach_btn">
             <button type="button" class="btn btn-primary btn-sm" @click="back">返回</button>
@@ -16,7 +16,7 @@
               <table class="table">
                 <caption>类型：</caption>
                 <tbody>
-                <tr class="radio_item"name="sex" v-for="(m,key) in data_list"value="m.type"@click="r_click(key)">
+                <tr class="radio_item table_tr"v-for="(m,key) in data_list" :class="{'success':ins===key}"name="sex" value="m.type"@click="r_click(key)">
                   <td><span>{{tranform[m.type]}}</span></td>
                   <td class="text-right">
                     <ins

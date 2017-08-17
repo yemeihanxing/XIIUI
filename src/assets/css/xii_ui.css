@@ -30,6 +30,9 @@ a {
 .red {
   color: red;
 }
+.gray{
+  background: #f2f2f2;
+}
 
 ::-webkit-scrollbar {
   width: 6px;
@@ -71,6 +74,9 @@ a {
   line-height: 50px;
   font-size: 24px;
   display: inline-block;
+}
+.header_content .s_id{
+  color: #ffffff;
 }
 
 .header_content .fr {
@@ -118,24 +124,65 @@ a {
 .fs16 {
   font-size: 16px;
 }
-
+/* 查询数据与输出设置 */
 .checking {
-  border: 1px solid #eeeeee;
   margin: 10px;
+  position: relative;
+}
+ .check_content .check_content-header, .output_content .output_content-header{
+  background: #799fc0;
+  color: #ffffff;
+  padding: 10px 15px;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+ .check_content, .output_content{
+  border: 1px solid #eeeeee;
+}
+ .check_content .check_content-items, .output_content .output_content-items{
   padding: 10px;
 }
-
-.checking .check_content {
-  display: flex;
+ .check_content .check_content-item, .output_content .output_content-item{
+  padding:5px 0;
+  min-height: 30px;
+}
+ .check_content .border{
+   border:1px solid #eeeeee;
+ }
+ .check_content .check_content-label, .output_content .output_content-label{
+  float: left;
+  width:80px;
+  text-align: right;
+}
+ .check_content .check_content-title,.output_content .output_content-title{
+  margin-left: 80px;
+}
+ .check_content .table-responsive,.output_content .table-responsive{
+  border:1px solid #eeeeee;
+  margin:10px 0 10px 0;
+}
+.check_content .table,.output_content .table{
+  margin-bottom: 10px;
+}
+.check_content .table tr,.output_content .table tr{
+  border-top:1px solid #eee;
+}
+ .check_content .table tr th, .check_content .table tr td,.output_content .table tr th, .output_content .table tr td{
+  text-align: center;
+}
+ .check_content caption,.output_content caption{
+  width: 80px;
+  text-align: right;
+  font-weight: bold;
 }
 
-.checking .check_item {
-  flex: 1;
-}
+/*.checking .check_item {*/
+  /*flex: 1;*/
+/*}*/
 
-.checking .item {
-  width: 180px;
-}
+/*.checking .item {*/
+  /*width: 180px;*/
+/*}*/
 
 .check_setting .check_item a {
   cursor: pointer;
@@ -163,10 +210,12 @@ a {
   padding: 15px;
 }
 
-.check_setting .panel-table table tr th {
+ .panel-table table tr th{
   text-align: center;
 }
-
+caption{
+  color: #2c3e50;
+}
 /*查询数据*/
 .check_data {
   border: 1px solid #337ab7;
@@ -207,7 +256,9 @@ a {
   border-radius: 5px;
   margin-bottom: 20px;
 }
-
+.outputing{
+  padding: 10px;
+}
 .output_setting .outputting {
   margin: 10px;
   padding: 10px;
@@ -342,27 +393,27 @@ a {
   background: #f57067;
 }
 
-#query .fields, #query .querys {
+ .fields,.querys {
   border: 1px solid #cccccc;
 }
 
-#query .fields .fields_item, #query .querys .querys_item {
+.fields .fields_item,.querys .querys_item {
   position: relative;
   margin: 5px;
   border: 1px solid #cccccc;
 }
 
-#query .fields .fields_label, #query .querys .querys_label {
+.fields .fields_label,.querys .querys_label {
   margin-top: 5px;
 }
 
-#query .fields .del, #query .querys .del {
+.fields .del,.querys .del {
   position: absolute;
   top: 5px;
   right: 10px;
 }
 
-#query .form-query {
+ .form-query {
   margin-top: 15px;
 }
 
@@ -451,6 +502,30 @@ a {
   vertical-align: middle;
 }
 .radio_item:hover{
-  background: #f2f2f2;
+  background: #58a5e7;
   cursor: pointer;
+}
+.tip{
+  position: absolute;
+  z-index: 9999;
+  top: 10%;
+  margin: 0 auto;
+  /*display: flex;*/
+  justify-content: center;
+  text-align: center;
+   width: 100%;
+  display: none;
+}
+.tip .tip_item{
+  padding: 10px;
+  display: inline-block;
+  border-radius: 4px;
+}
+#output .col-sm-2{
+  padding-left:0;
+}
+#output .form-horizontal .form-group{
+  margin-left:0;
+  margin-right: 0;
+  margin-bottom:5px;
 }

@@ -36,17 +36,18 @@
               </div>
             </div>
             <div class="form-group">
+              <label class="col-sm-2 control-label">机械名称<span class="red">*</span>:</label>
+              <div class="col-sm-5">
+                <input type="text" class="form-control" v-model="item.machine_name">
+              </div>
+            </div>
+            <div class="form-group">
               <label class="col-sm-2 control-label">值:</label>
               <div class="col-sm-5">
                 <input type="text" class="form-control" v-model="item.value">
               </div>
             </div>
-            <div class="form-group">
-              <label class="col-sm-2 control-label">机器名称<span class="red">*</span>:</label>
-              <div class="col-sm-5">
-                <input type="text" class="form-control" v-model="item.machine_name">
-              </div>
-            </div>
+
             <div class="form-group">
               <label class="col-sm-2 control-label">请求:</label>
               <div class="col-sm-5 sport">
@@ -64,11 +65,14 @@
         </div>
       </div>
     </div>
+    <n-tip :tip="tip"></n-tip>
   </div>
 </template>
 <script>
+  import $ from 'jquery';
+  import nTip from '../components/tip.vue';
   export default {
-    props: ['data'],
+    props: ['data','state'],
     data() {
       return {
         data_list: [{type: 'query'}, {type: 'statics'}, {type: 'body'}, {type: 'login'}, {type: 'NULL'}],
@@ -85,17 +89,32 @@
           {data_type: 'json'},
           {data_type: 'default'},
           {data_type: 'boolean'}],
-        item: {data: '', data_type: '', title: ''},
+        item: {},
         ins:'',
         hover:'',
-        index:0
+        index:0,
+        tip:''
       }
     },
     methods: {
       confirm() {
-        this.index++;
+
+       // 把必填写的进行判断
+       if(!this.item.type || !this.item.data_type || !this.item.title || !this.item.machine_name){
+      //  提示用户填写完整
+         $('.tip').show();
+         this.tip = '必要信息没有填写完整';
+         setTimeout(function () {
+           $('.tip').hide(1000)
+         },2000)
+         return ;
+       }
+
+        if(this.state=='add'){
+          this.index++;
+          this.item.machine_name = this.item.machine_name +'_'+ this.index.toString();
+        }
         this.item.request = this.ins;
-        this.item.machine_name = this.item.machine_name +'_'+ this.index.toString();
         this.$emit('confirm', this.item);
         this.item = {};
         this.ins = false;
@@ -128,7 +147,11 @@
         this.ins = this.data.request;
         return this.item = this.data;
       }
-    }
+    },
+
+    components: {
+    nTip
+  }
   }
 </script>
 <style>
