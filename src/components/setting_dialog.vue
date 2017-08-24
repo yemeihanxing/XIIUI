@@ -16,8 +16,8 @@
             <div class="form-group">
               <label class="col-sm-2 control-label">类型<span class="red">*</span>:</label>
               <div class="col-sm-5">
-                <select class="form-control input-sm" v-model="item.type" :value="getData">
-                  <option v-for="m in data_list" :value="m.type">{{tranform[m.type]}}</option>
+                <select class="form-control input-sm" v-model="item.type" :value="getData"@change="gradeChange">
+                  <option v-for="m in data_list" :value="m.type">{{transform[m.type]}}</option>
                 </select>
               </div>
             </div>
@@ -25,7 +25,7 @@
               <label class="col-sm-2 control-label">数据类型<span class="red">*</span>:</label>
               <div class="col-sm-5">
                 <select class="form-control input-sm" v-model="item.data_type">
-                  <option v-for="m in data_type_list" :value="m.data_type">{{tranform[m.data_type]}}</option>
+                  <option v-for="m in data_type_list" :value="m.data_type">{{transform[m.data_type]}}</option>
                 </select>
               </div>
             </div>
@@ -41,14 +41,14 @@
                 <input type="text" class="form-control" v-model="item.machine_name">
               </div>
             </div>
-            <div class="form-group">
-              <label class="col-sm-2 control-label">值:</label>
+            <div class="form-group"v-if="showValue">
+              <label class="col-sm-2 control-label">默认值:</label>
               <div class="col-sm-5">
                 <input type="text" class="form-control" v-model="item.value">
               </div>
             </div>
 
-            <div class="form-group">
+            <div class="form-group" v-if="showRequest">
               <label class="col-sm-2 control-label">请求:</label>
               <div class="col-sm-5 sport">
                 <!--<input type="text"class="form-control"v-model="item.request">-->
@@ -71,29 +71,22 @@
 <script>
   import $ from 'jquery';
   import nTip from '../components/tip.vue';
+  import dataClass from '../utils/dataClass';
+  import * as data from '../utils/datas';
   export default {
     props: ['data','state'],
     data() {
       return {
-        data_list: [{type: 'query'}, {type: 'statics'}, {type: 'body'}, {type: 'login'}, {type: 'NULL'}],
-        tranform: {
-          'string': '字符串', 'int': '整型', 'NULL': '空', 'array': '数组', 'objectId': 'objectId', 'number': '数字',
-          'json': 'json', 'default': 'default', 'boolean': '布尔类型', 'body': 'body值', 'statics': '固定值', 'query': '查询',
-          'login': '登陆用户ID', 'search': '搜索获取'
-        },
-        data_type_list: [{data_type: 'string'},
-          {data_type: 'NULL'}, {data_type: 'array'},
-          {data_type: 'objectId'},
-          {data_type: 'number'},
-          {data_type: 'int'},
-          {data_type: 'json'},
-          {data_type: 'default'},
-          {data_type: 'boolean'}],
+        data_list: data.data_list,
+        transform: data.transform,
+        data_type_list: data.data_type_list,
         item: {},
-        ins:'',
+        ins:false,
         hover:'',
         index:0,
-        tip:''
+        tip:'',
+        showValue:true,
+        showRequest:true,
       }
     },
     methods: {
@@ -102,18 +95,10 @@
        // 把必填写的进行判断
        if(!this.item.type || !this.item.data_type || !this.item.title || !this.item.machine_name){
       //  提示用户填写完整
-         $('.tip').show();
          this.tip = '必要信息没有填写完整';
-         setTimeout(function () {
-           $('.tip').hide(1000)
-         },2000)
+         dataClass.showTip();
          return ;
        }
-
-        if(this.state=='add'){
-          this.index++;
-          this.item.machine_name = this.item.machine_name +'_'+ this.index.toString();
-        }
         this.item.request = this.ins;
         this.$emit('confirm', this.item);
         this.item = {};
@@ -139,6 +124,19 @@
       },
       hoverOver() {
          this.hover = true;
+      },
+      gradeChange(){
+        console.log('item.tpe:',this.item.type);
+        if(this.item.type=='login'){
+          this.showValue = false;
+        }else{
+          this.showValue = true;
+        }
+        if(this.item.type=='statics'){
+          this.showRequest = false;
+        }else{
+          this.showRequest = true;
+        }
       }
     },
 

@@ -41,31 +41,32 @@
           </div>
         </div>
       </div>
+
       <!--查询设置-->
       <div class="check_setting">
         <div class="h3_item">
           <h3 class="fs16">查询设置</h3>
           <div class="fr add-btn">
-            <button typeof="button" @click="search_add" data-toggle="modal" data-backdrop="static"
+            <button typeof="button" @click="setting_add('setting')" data-toggle="modal" data-backdrop="static"
                     data-target="#setting" class="btn btn-primary btn-sm">添加
             </button>
           </div>
         </div>
-        <div class="panel-table"v-if="search_add_data.length>0">
+        <div class="panel-table"v-if="setting_add_data.length>0">
           <table class="table table-striped text-center">
             <thead>
             <tr>
               <th>名称</th>
-              <th>产品</th>
-              <th>数量</th>
+              <th>类型</th>
+              <th>数据类型</th>
               <th>操作</th>
             </tr>
             </thead>
             <thead>
-            <tr v-for="m in search_add_data"class="table_tr">
+            <tr v-for="m in setting_add_data"class="table_tr">
               <td>{{m.name}}<span v-if="m.request"class="red"> (必须)</span></td>
-              <td>{{m.type}}</td>
-              <td>{{m.data_type}}</td>
+              <td>{{transform[m.type]}}</td>
+              <td>{{transform[m.data_type]}}</td>
               <td>
                 <a data-toggle="modal" data-target="#setting" class="edit" @click="setting_edit(m)">编辑</a> |
                 <a href="javascript:;" class="del" @click="search_del(m,'setting')">删除</a>
@@ -87,7 +88,7 @@
         <div class="h3_item">
           <h3 class="fs16">查询数据</h3>
           <div class="fr add-btn">
-            <button type="button" @click="search_add" data-toggle="modal" data-backdrop="static" data-target="#type_dialog"
+            <button type="button" @click="setting_add('search')" data-toggle="modal" data-backdrop="static" data-target="#type_dialog"
                     class="btn btn-primary btn-sm">添加
             </button>
           </div>
@@ -102,10 +103,6 @@
                 </div>
               </div>
               <div class="check_content-items">
-                <div class="check_content-item">
-                  <label class="check_content-label">类型：</label>
-                  <div class="check_content-title">{{m.type}}</div>
-                </div>
                 <div class="check_content-item">
                   <label class="check_content-label">model：</label>
                   <div class="check_content-title">{{m.model}}</div>
@@ -168,7 +165,7 @@
           </div>
           <div v-if="m.type=='group'" class="check_content">
             <div class="check_content-header">
-              <h3 class="fs16">group</h3>
+              <h3 class="fs16">组合</h3>
               <div class="fr add-btn">
                 <button data-toggle="modal" data-target="#query" class="btn btn-primary btn-sm" @click="search_edit(m,'search')">编辑</button>
                 <button href="javascript:;" class="btn btn-danger btn-sm" @click="search_del(m,'search')">删除</button>
@@ -176,24 +173,20 @@
             </div>
             <div class="check_content-items">
               <div class="check_content-item">
-                <label class="check_content-label">类型：</label>
-                <div class="check_content-title">{{m.type}}</div>
+                <label class="check_content-label">键值：</label>
+                <div class="check_content-title">{{m.key}}</div>
               </div>
               <div class="check_content-item">
-                <label class="check_content-label">字段1：</label>
-                <div class="check_content-title">{{m.field1}}</div>
+                <label class="check_content-label">新字段：</label>
+                <div class="check_content-title">{{m.new_field}}</div>
               </div>
               <div class="check_content-item">
                 <label class="check_content-label">字段1名称：</label>
-                <div class="check_content-title">{{m.field1_name}}</div>
-              </div>
-              <div class="check_content-item">
-                <label class="check_content-label">字段2：</label>
-                <div class="check_content-title">{{m.field2}}</div>
+                <div class="check_content-title">{{m.new_field1_name}}</div>
               </div>
               <div class="check_content-item">
                 <label class="check_content-label">字段2名称：</label>
-                <div class="check_content-title">{{m.field2_name}}</div>
+                <div class="check_content-title">{{m.new_field2_name}}</div>
               </div>
               <div class="check_content-item">
                 <label class="check_content-label">新字段：</label>
@@ -207,7 +200,7 @@
           </div>
           <div v-if="m.type=='get_key'" class="check_content">
             <div class="check_content-header">
-              <h3 class="fs16">get_key</h3>
+              <h3 class="fs16">获取键值</h3>
               <div class="fr add-btn">
                 <button data-toggle="modal" data-target="#query" class="btn btn-primary btn-sm" @click="search_edit(m,'search')">编辑</button>
                 <button href="javascript:;" class="btn btn-danger btn-sm" @click="search_del(m,'search')">删除</button>
@@ -215,38 +208,27 @@
             </div>
             <div class="check_content-items">
               <div class="check_content-item">
-                <label class="check_content-label">类型：</label>
-                <div class="check_content-title">{{m.type}}</div>
-              </div>
-              <div class="check_content-item">
-                <label class="check_content-label">字段1：</label>
-                <div class="check_content-title">{{m.field1}}</div>
+                <label class="check_content-label">键值：</label>
+                <div class="check_content-title">{{m.key}}</div>
               </div>
               <div class="check_content-item">
                 <label class="check_content-label">字段1名称：</label>
-                <div class="check_content-title">{{m.field1_name}}</div>
-              </div>
-              <div class="check_content-item">
-                <label class="check_content-label">字段2：</label>
-                <div class="check_content-title">{{m.field2}}</div>
+                <div class="check_content-title">{{m.new_field1_name}}</div>
               </div>
               <div class="check_content-item">
                 <label class="check_content-label">字段2名称：</label>
-                <div class="check_content-title">{{m.field2_name}}</div>
+                <div class="check_content-title">{{m.new_field2_name}}</div>
               </div>
               <div class="check_content-item">
                 <label class="check_content-label">字段2_get：</label>
                 <div class="check_content-title">{{m.field2_get}}</div>
               </div>
-              <div class="check_content-item">
-                <label class="check_content-label">新字段：</label>
-                <div class="check_content-title">{{m.new_field}}</div>
-              </div>
+
             </div>
           </div>
           <div v-if="m.type=='set_key'" class="check_content">
             <div class="check_content-header">
-              <h3 class="fs16">set_key</h3>
+              <h3 class="fs16">设置键值</h3>
               <div class="fr add-btn">
                 <button data-toggle="modal" data-target="#query" class="btn btn-primary btn-sm" @click="search_edit(m,'search')">编辑</button>
                 <button href="javascript:;" class="btn btn-danger btn-sm" @click="search_del(m,'search')">删除</button>
@@ -254,8 +236,8 @@
             </div>
             <div class="check_content-items">
               <div class="check_content-item">
-                <label class="check_content-label">类型：</label>
-                <div class="check_content-title">{{m.type}}</div>
+                <label class="check_content-label">键值：</label>
+                <div class="check_content-title">{{m.key}}</div>
               </div>
               <div class="check_content-item">
                 <label class="check_content-label">fields：</label>
@@ -269,7 +251,7 @@
           </div>
           <div v-if="m.type=='get_value'" class="check_content">
             <div class="check_content-header">
-              <h3 class="fs16">get_value</h3>
+              <h3 class="fs16">获取值</h3>
               <div class="fr add-btn">
                 <button data-toggle="modal" data-target="#query" class="btn btn-primary btn-sm" @click="search_edit(m,'search')">编辑</button>
                 <button href="javascript:;" class="btn btn-danger btn-sm" @click="search_del(m,'search')">删除</button>
@@ -277,8 +259,8 @@
             </div>
             <div class="check_content-items">
               <div class="check_content-item">
-                <label class="check_content-label">类型：</label>
-                <div class="check_content-title">{{m.type}}</div>
+                <label class="check_content-label">键值：</label>
+                <div class="check_content-title">{{m.key}}</div>
               </div>
               <div class="check_content-item">
                 <label class="check_content-label">field：</label>
@@ -305,7 +287,7 @@
             <div class="output_content-header">
               <h3 class="fs16">success</h3>
               <div class="fr add-btn">
-                <button data-toggle="modal" data-target="#output" class="btn btn-primary btn-sm"@click="output_eidt">编辑</button>
+                <button data-toggle="modal" data-target="#output" data-backdrop="static" class="btn btn-primary btn-sm"@click="output_eidt">编辑</button>
               </div>
             </div>
             <div class="output_content-items">
@@ -344,7 +326,7 @@
             <div class="output_content-header">
               <h3 class="fs16">error</h3>
               <div class="fr add-btn">
-                <button data-toggle="modal" data-target="#output" class="btn btn-primary btn-sm">编辑</button>
+                <button class="btn btn-primary btn-sm">编辑</button>
               </div>
             </div>
             <div class="output_content-items">
@@ -404,7 +386,7 @@
     </div>
 
      <!--确认弹窗-->
-    <n-dialog v-show="dialog" :msg="tips" @sure="sureDialog" @cancel="dialog=false"></n-dialog>
+    <n-dialog v-show="dialog" :msg="tip" @sure="sureDialog" @cancel="dialog=false"></n-dialog>
      <!--设置弹窗-->
     <s-dialog :data="data" @confirm="confirm" :state="states"></s-dialog>
      <!--类型弹窗-->
@@ -417,7 +399,8 @@
       @on-result-confirm="onResultConfirm"
       @search_back="search_back"
       :item_key = item_key
-      :states=states>
+      :states=states
+      :search_keys="search_keys">
     </q-dialog>
 
     <m-dialog :data="amend_message_data"@message_confirm="message_confirm"></m-dialog>
@@ -437,46 +420,42 @@
   import qDialog from '../components/query_dialog.vue';
   import oDialog from '../components/output_dialog.vue';
   import mDialog from '../components/message_dialog.vue';
-
+  import * as data from '../utils/datas';
   export default {
     name: 'home',
     data() {
       return {
-        data_list: [{type: 'query'}, {type: 'statics'}, {type: 'body'}, {type: 'login'}, {type: 'NULL'}],
-        data_type_list: [{data_type: 'string'},
-          {data_type: 'NULL'}, {data_type: 'array'},
-          {data_type: 'objectId'},
-          {data_type: 'number'},
-          {data_type: 'int'},
-          {data_type: 'json'},
-          {data_type: 'default'},
-          {data_type: 'boolean'}],
-        transform: {
-          'string': '字符串', 'int': '整型', 'NULL': '空', 'array': '数组', 'objectId': 'objectId', 'number': '数字',
-          'json': 'json', 'default': 'default', 'boolean': '布尔类型', 'body': 'body值', 'statics': '固定值', 'query': '查询',
-          'login': '登陆用户ID', 'search': '搜索获取','read':'读','write':'写','':''
-        },
-        select_data: '',
-        tip: '',
-        data:{},
+        data_list: data.data_list,
+        data_type_list: data.data_type_list,
+        transform: data.transform,
+        // 1.基本信息
         amend_message_data:{},
         message_data:{title:'公司',machine_name:'机器名',path:'/xii_ui/xiiui.html',permission:'',permissions:['read','write']},
-        search_add_data: [],//查询设置数据
+       //2.设置数据
+        setting_add_data: [],//查询设置数据
+
+       // 选择查询的类型
+        select_type: '',// 选择查询类型的变量
+      // 3.查询数据
         search_data: [],// 查询数据
+        amend_find_data: {pager: {page: '', limit: 30}, fields: [], query: []},// 查询类型为find的默认数据
+        amend_other_data: {},// 查询类型为其它的类型的默认数据
+        item_key:0,// 查询数据类型为find时，让key进行加1
+        search_keys:[], // 查询数据类型为find时，具体查询处的key是下拉选择
+      // 4.输出数据
+        amend_output_data:{},
         output_data:{success:{type:'reduce',fields:[{type: 'statics', value: 'false', data_type: 'boolean', key: 'error'},
           {type: 'statics', value: 'true', data_type: 'boolean', key: 'success'},
           {type: 'statics', value: 'search.set_key.0', data_type: 'default', key: 'data'}]},error:{type:'output'}},
-        showDialog: false,
-        dialog: false,
-        tips: '',
-        amend_find_data: {pager: {page: '', limit: 30}, fields: [], query: []},
-        amend_other_data: {},
-        detail_data: {},
-        amend_output_data:{},
-        select_type: '',
-        states: '',
-        type: '',
-        item_key:0,
+
+
+        // 其余的
+        tip: '',  //显示确认弹窗的文字
+        dialog: false,  // 是否显示确认弹窗的变量
+        select_data: '',// 点击删除时选定的数据
+        data:{},// (设置项与查询项)修改传递给组件的中间变量
+        states: '',// 添加与修改的状态
+        type: '',// 删除时是否为设置或者搜索的变量
       }
     },
     methods: {
@@ -491,23 +470,30 @@
         $('#message').modal('show');
       },
 
-      search_add() {
-
+      setting_add(type) {
+        if(type=='search'&&this.setting_add_data.length>0){
+          this.search_keys = _.reduce(this.setting_add_data,function (result,li) {
+               result.push({key:li.title});
+               return result;
+          },[]);
+        }
         this.states = 'add';
+        console.log('this.setting_add_data:',this.setting_add_data);
       },
       confirm(item) {
         if (this.states == "add") {
           item._id = deal.for_id();
-          this.search_add_data.push(item);
-          this.search_add_data = deal.for_title(this.search_add_data);
+          this.setting_add_data.push(item);
+          this.setting_add_data = deal.for_title(this.setting_add_data);
         } else {
           // 修改已存在的数据
-          let index = _.findIndex(this.search_add_data, {_id: item._id});
-          this.search_add_data[index] = _.assign(this.search_add_data[index], item);
-          this.search_add_data = deal.for_title(this.search_add_data);
+          let index = _.findIndex(this.setting_add_data, {_id: item._id});
+          this.setting_add_data[index] = _.assign(this.setting_add_data[index], item);
+          this.setting_add_data = deal.for_title(this.setting_add_data);
         }
         $('#setting').modal('hide');
         this.data = {};
+        console.log('this.setting_add_data:',this.setting_add_data);
       },
       setting_edit(m) {
         this.states = 'edit';
@@ -518,14 +504,14 @@
         this.select_data = m;
         this.dialog = true;
         this.type = type;
-        this.tips = '删除后无法恢复，确认删除吗？';
+        this.tip = '删除后无法恢复，确认删除吗？';
       },
       sureDialog() {
         if (this.type == 'setting') {
           if (this.select_data) {
-            let index = _.findIndex(this.search_add_data, {'_id': this.select_data._id})
+            let index = _.findIndex(this.setting_add_data, {'_id': this.select_data._id})
             if (index >= 0) {
-              this.search_add_data.splice(index, 1);
+              this.setting_add_data.splice(index, 1);
             }
           }
         } else {
@@ -554,7 +540,7 @@
         $('#query').modal('show');
       },
 
-      onResultConfirm(item,key) {
+      onResultConfirm(item) {
         console.log('item:', item);
 
         if (this.states == 'add') {
@@ -563,9 +549,7 @@
           this.search_data.push(item);
 
         } else {
-          if(item.type=='find'){
-            item = deal.for_search_title(item);
-          }
+          item = deal.for_search_title(item);
           let index = _.findIndex(this.search_data, {_id: item._id});
           console.log('index:', index);
           if (index >= 0) {
@@ -576,7 +560,7 @@
         this.amend_find_data = {pager: {page: '', limit: 30}, fields: [], query: []};
         this.amend_other_data = {};
       },
-      search_back(key) {
+      search_back() {
         this.amend_find_data = {pager: {page: '', limit: 30}, fields: [], query: []};
         this.amend_other_data = {};
       },
@@ -613,21 +597,5 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  h1, h2 {
-    font-weight: normal;
-  }
 
-  ul {
-    list-style-type: none;
-    padding: 0;
-  }
-
-  li {
-    display: inline-block;
-    margin: 0 10px;
-  }
-
-  a {
-    color: #337ab7;
-  }
 </style>

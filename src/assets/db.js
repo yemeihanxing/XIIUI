@@ -86,25 +86,26 @@ class DB_SEARCH {
     let result = {};
     let errors = {};
 
-    for (let key in query) {
-      let setting = query[key];
-      let method = await this.queryTypeMethod(setting.type);
+
+    for (let key  in query) {// 循环query
+      let setting = query[key];// query中key对应的值
+      let method = await this.queryTypeMethod(setting.type);// 传入设置的类型type，返回一个函数
       setting.key = key;
 
       try {
-        let _data;
-        if (lodash.has(data, key)) {
-          _data = data[key];
+        let _data;// 定义一个_data变量
+        if (lodash.has(data, key)) { // 判断data对象是否存在key这个值
+          _data = data[key];// 如果data存在key这个值，把key对应的值赋值给_data
         } else {
-          _data = await method(this, setting, data[key]);
+          _data = await method(this, setting, data[key]);// 把this,setting,data[key]的值传入method函数中，返回一个值
         }
 
-        if (!_data && setting.request) {
+        if (!_data && setting.request) {// 如果_data没值并且setting.request存在
           // throw new Error('');
           errors[key] = setting.title + ' 是必须填写的!';
         } else {
-          let typeMethod = await this.typeTypeMethod(setting.data_type);
-          result[key] = await typeMethod(_data);
+          let typeMethod = await this.typeTypeMethod(setting.data_type);// 传入数据类型，返回一个函数
+          result[key] = await typeMethod(_data);// 返回一个值赋值给result[key]
         }
       } catch (e) {
         errors[key] = e.message;
@@ -126,14 +127,14 @@ class DB_SEARCH {
    * @param {object} query
    * */
   async getSearch(search, query) {
-    let result = {};
-    for (let index in search) {
-      let setting = search[index];
+    let result = {};///定义一个变量result
+    for (let index in search) {//循环search
+      let setting = search[index];// search对应的值(0,1,2,3,...)赋值给setting
       setting.key = setting.key || ('search_' + (index + 1));
 
-      let method = await this.searchTypeMethod(setting.type);
+      let method = await this.searchTypeMethod(setting.type);//传入search的类型，返回一个函数
 
-      result[setting.key] = await method(this, setting, query, result);
+      result[setting.key] = await method(this, setting, query, result);// 传参，返回的值赋值给result
     }
 
     return result;
@@ -141,11 +142,11 @@ class DB_SEARCH {
 
   async output(output, search, query, err) {
     let data, setting;
-    if (err) {
-      setting = output.error;
+    if (err) {// 如果err有值
+      setting = output.error;// output.error赋值给setting
       data = err;
     } else {
-      setting = output.success;
+      setting = output.success;// output.success赋值给setting
       data = {search, query};
     }
 
@@ -190,7 +191,6 @@ class DB_SEARCH {
       } catch (e) {
         err = e;
       }
-
     }
 
     if (obj.output) {
@@ -217,8 +217,8 @@ class DB_SEARCH {
   }
 
   async typeTypeMethod(type) {
-    let def = 'default';
-    return default_methods.type[type || def] || default_methods.type[def];
+    let def = 'default';// 定义def变量的值为default
+    return default_methods.type[type || def] || default_methods.type[def];// 传入数据类型的值
   }
 
   async queryTypeMethod(type) {
@@ -272,14 +272,14 @@ class DB_SEARCH {
   }
 
   async searchQuery2key(setting, query) {
-    let _query = {};
-    if (setting.query && setting.query.length) {
-      setting.query.forEach(function (q) {
-        _query[q.field] = query[q.key];
+    let _query = {};// 定义一个变量_query
+    if (setting.query && setting.query.length) {// 这判断setting.query是否存在并且setting.query.length的长度是否大于0
+      setting.query.forEach(function (q) {// forEach循环setting.query.
+        _query[q.field] = query[q.key];// setting.qeury里的key在设置里边对应的值赋值给_query的setting.qeury里的field
       });
     }
 
-    return _query;
+    return _query;//返回_query
   }
 }
 
@@ -320,41 +320,41 @@ let default_methods = {
      * @param {object} prev_search
      * */
     find: async (db_search, setting, query = {}, prev_search) => {
-      let pager = setting.pager || {};
-      let page = setting.pager.page || query.page || 0;
-      let _query = await db_search.searchQuery2key(setting, query);
+      let pager = setting.pager || {};// 如果设置里的pager存在，赋值pager，如果不存在则赋值{}
+      let page = setting.pager.page || query.page || 0;// 如果存在page，则赋值给page，否则赋值0
+      let _query = await db_search.searchQuery2key(setting, query);// 判断是否存在setting.query。返回一个对象给_query
       let data, result;
-      // 找一个
+      // page为空并且pageccr.limit ===1，只能查找一个
       if (!page && parseInt(pager.limit || 0) === 1) {
-        let d = await db_search.dbFindOne(setting.model, _query);
+        let d = await db_search.dbFindOne(setting.model, _query);//把数据库表名与参数传进去查找
 
-        data = d ? [d] : [];
-      } else {
+        data = d ? [d] : [];//如果查找到有值，将其变成一个数组，否则以空数组[]
+      } else {// 查找多个
         data = await db_search.dbFind(setting.model, _query, pager.limit, page);
       }
 
       // 获取field
-      if (data.length) {
+      if (data.length) {// 判断查找的data的长度是否大于0
         result = [];
-        for (let val of data) {
-          let d = {};
-          if (lodash.has(setting, 'fields')) {
-            for (let _set of setting.fields) {
-              let _val = lodash.get(val, _set.field);
-              if (lodash.has(_set, 'data_type')) {
-                _val = await db_search.typeValue(_set.data_type, _val);
+        for (let val of data) {// for循环data
+          let d = {};// 定义一个对象{}
+          if (lodash.has(setting, 'fields')) {// 判断setting中是否有字符集fields
+            for (let _set of setting.fields) {// setting.fields进行循环
+              let _val = lodash.get(val, _set.field);//  lodash.get得到_set.field,然后赋值给_val
+              if (lodash.has(_set, 'data_type')) {// 判断字段集是否存在data_type
+                _val = await db_search.typeValue(_set.data_type, _val);//有的话得到_val
               }
-              lodash.set(d, _set.key, _val);
+              lodash.set(d, _set.key, _val);// 把_set.key,_val.作为key,value的实行放入到d对象中
             }
 
           } else {
-            d = val;
+            d = val;// 如果不存在fields，直接把val赋值给d
           }
 
-          result.push(d);
+          result.push(d); // 把d放入到result中
         }
 
-        return result;
+        return result;// 返回result
       }
 
       return [];
@@ -368,12 +368,15 @@ let default_methods = {
      * @param {object} prev_search
      * */
     group: async (db_search, setting, query = {}, prev_search) => {
-      // 复制第一个数据
+      // 复制第一个数据field1_name
       let result = lodash.cloneDeep(prev_search[setting.field1_name]);
-      // 使用 filed2 重新组合第二个数据
+      // 使用 filed2 重新组合第二个数据?
       let map_data = lodash.groupBy(prev_search[setting.field2_name], setting.field2);
-      if (setting.one) {
+
+      if (setting.one) {// 如果存在one
+
         map_data = lodash.mapValues(map_data, '0');
+
       }
 
       // 设置新键的值
@@ -417,7 +420,7 @@ let default_methods = {
      * */
     set_key: async (db_search, setting, query = {}, prev_search) => {
       let result = lodash.cloneDeep(prev_search[setting.field1_name]);
-      let fields = setting.fields;
+      let fields = setting.fields; // 此处是字符串，
 
       lodash.forEach(result, function (value) {
         Object.assign(value, fields);
@@ -450,12 +453,12 @@ let default_methods = {
     reduce: async (db_search, setting, data) => {
       let result = {};
 
-      for (let _set of setting.fields) {
+      for (let _set of setting.fields) {// 循环setting.fields
         console.log(_set);
-        let value;
-        switch (_set.type) {
+        let value; // 设置变量value
+        switch (_set.type) { // 判断_set.type类型
           case 'statics':
-            value = await db_search.typeValue(_set.data_type, _set.value);
+            value = await db_search.typeValue(_set.data_type, _set.value);// 传入_set.data.type,和_set.value,返回
             break;
           case 'get':
           default:

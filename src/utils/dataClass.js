@@ -43,8 +43,24 @@ export default {
        item.name = item.title+" (" + item.key + ')';
       return item;
     }
+    if(item.type=='group' || item.type=='get_key'){
+      if(item.field1 && item.field1_name){
+        item.new_field1_name = item.field1_name + "[*]"+"["+item.field1+"]";
+      }
+      if(item.field2 && item.field2_name){
+        item.new_field2_name = item.field2_name + "[*]"+"["+item.field2+"]";
+      }
+
+    }
     return item
 
     // })
+  },
+
+  showTip(){
+    $('.tip').show();
+    setTimeout(function () {
+      $('.tip').hide(300)
+    },1000)
   }
 }

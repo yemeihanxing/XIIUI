@@ -35,6 +35,7 @@
   </div>
 </template>
 <script>
+  import {transform} from '../utils/datas'
   export default {
     data() {
       return {
@@ -43,10 +44,7 @@
           {type: 'get_key',ins:2},
           {type: 'set_key',ins:3},
           {type: 'get_value',ins:4}],
-        tranform: {
-          find: '查找', group: '组合', get_key: '获取键值',
-          set_key: '设置键置', get_value: '获取值'
-        },
+        tranform:transform ,
         ins:-1,
         hover: '',
       }
