@@ -4,7 +4,7 @@
       <div class="modal-content">
         <div class="modal-header header">
           <h4 class="modal-title">
-            修改设置
+            {{getStates}}
           </h4>
           <div class="add-seach_btn">
             <button type="button" class="btn btn-primary btn-sm" @click="back">返回</button>
@@ -90,7 +90,7 @@
       }
     },
     methods: {
-      confirm() {
+      confirm() {// 用户填写完之后，进行确认
 
        // 把必填写的进行判断
        if(!this.item.type || !this.item.data_type || !this.item.title || !this.item.machine_name){
@@ -100,12 +100,12 @@
          return ;
        }
         this.item.request = this.ins;
-        this.$emit('confirm', this.item);
+        this.$emit('on-setting-result-confirm', this.item);
         this.item = {};
         this.ins = false;
         $('#setting').modal('hide')
       },
-      back() {
+      back() {//返回
         $('#setting').modal('hide');
         this.item = {};
         this.ins = false;
@@ -144,6 +144,9 @@
       getData: function () {
         this.ins = this.data.request;
         return this.item = this.data;
+      },
+      getStates:function () {
+        return this.state=='add'?'添加设置':'修改设置';
       }
     },
 
@@ -153,8 +156,5 @@
   }
 </script>
 <style>
-  #ceshi .item {
-    border: 0;
-    box-shadow: none;
-  }
+
 </style>

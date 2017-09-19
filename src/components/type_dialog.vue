@@ -16,7 +16,7 @@
               <table class="table">
                 <caption>类型：</caption>
                 <tbody>
-                <tr class="radio_item table_tr"v-for="(m,key) in data_list" :class="{'success':ins===key}"name="sex" value="m.type"@click="r_click(key)">
+                <tr class="radio_item table_color" v-for="(m,key) in data_list" :class="{'success':ins===key}"name="sex" value="m.type"@click="r_click(key)">
                   <td><span>{{tranform[m.type]}}</span></td>
                   <td class="text-right">
                     <ins
